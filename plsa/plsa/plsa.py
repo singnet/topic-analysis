@@ -262,14 +262,14 @@ class pLSA(object):
             np.random.seed(0) # uncomment for deterministic init
         if self.p_z is None:
             self.p_z = normalize(np.random.random(Z))
-            print(self.p_z)
-            np.savetxt("pz.csv", self.p_z, delimiter=",")
+            # print(self.p_z)
+            # np.savetxt("pz.csv", self.p_z, delimiter=",")
         if self.p_w_z is None:
             self.p_w_z = normalize(np.random.random((V,Z)), axis=0)
-            np.savetxt("pwz.csv", self.p_w_z, delimiter=",")
+            # np.savetxt("pwz.csv", self.p_w_z, delimiter=",")
         if self.p_d_z is None:
             self.p_d_z = normalize(np.random.random((D,Z)), axis=0)
-            np.savetxt("pdz.csv", self.p_d_z, delimiter=",")
+            # np.savetxt("pdz.csv", self.p_d_z, delimiter=",")
 
 
     def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False,beta=beta2,min_iteration = min_iteration2): # eps=0.01 is default value
