@@ -20,15 +20,15 @@ consists of a collection of words that represent a given topic.
 
 LSA:
  * Research paper: [Indexing by Latent Semantic Analysis](http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.108.8490&rep=rep1&type=pdf)
- * [Wikipedia entry] (https://en.wikipedia.org/wiki/Latent_semantic_analysis)
+ * [Wikipedia entry](https://en.wikipedia.org/wiki/Latent_semantic_analysis)
 
 PLSA:
  * Research aper: [Unsupervised Learning by Probabilistic Latent Semantic Analysis](http://www.cs.bham.ac.uk/~pxt/IDA/plsa.pdf)
- * [Wikipedia entry] (https://en.wikipedia.org/wiki/Probabilistic_latent_semantic_analysis)
+ * [Wikipedia entry](https://en.wikipedia.org/wiki/Probabilistic_latent_semantic_analysis)
 
 LDA:
  * Research paper: [Latent Dirichlet Allocation](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf)
- * [Wikipedia entry] (https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation)
+ * [Wikipedia entry](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation)
 
 LDA2vec:
  * Research paper: [Mixing Dirichlet Topic Models and Word Embeddings to Make lda2vec](https://arxiv.org/abs/1605.02019)
