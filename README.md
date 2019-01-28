@@ -3,7 +3,7 @@
 # Topic Analysis Services
 
 
-This repository contains various topic analysis services for SingularityNET. The topic analysis methods would include:
+This repository contains various [topic analysis](https://en.wikipedia.org/wiki/Topic_model) services for SingularityNET. The topic analysis methods would include:
 
 * Latent semantic analysis (LSA)
 * Probabilistic latent semantic analysis (PLSA)
@@ -12,7 +12,7 @@ This repository contains various topic analysis services for SingularityNET. The
 
 The services are wrapped using gRPC.
 
-The user provides a collection of documents for [topic analysis](https://en.wikipedia.org/wiki/Topic_model) and the service would return discoverd topics. Each topic
+The user provides a collection of documents for topic analysis and the service would return discoverd topics. Each topic
 consists of a collection of words that represent a given topic.
 
 
