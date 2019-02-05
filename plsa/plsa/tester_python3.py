@@ -67,11 +67,11 @@ class TopicAnalysis:
 
         os.mkdir(self.extracted_folder+self.unique_folder_naming)
 
-        idx = 0
+        # idx = 0
 
         for row in self.messages:
             if row['subtype'] == 'chat':
-                file = self.extracted_folder+self.unique_folder_naming+str(idx+2)+'.txt'
+                file = self.extracted_folder+self.unique_folder_naming+row['id']+'.txt'
                 if self.channel == '':
                     with open(file, 'w') as f:
                         f.write(row['text'])
@@ -82,7 +82,7 @@ class TopicAnalysis:
                     else:
                         continue
 
-            idx = idx + 1
+            # idx = idx + 1
 
 
     def generate_topics(self):
