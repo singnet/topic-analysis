@@ -102,6 +102,8 @@ class TopicAnalysis:
         pclean.pre_pro()
 
         # Train using PLSA
+        pplsa.topic_divider = 0
+        pplsa.num_topics = 2
         pplsa.folder = pclean.output_dir[:-1]
         pplsa.dict_path = pclean.file_dict
         pplsa.PLSA_PARAMETERS_PATH = self.plsa_parameters_path + self.unique_folder_naming

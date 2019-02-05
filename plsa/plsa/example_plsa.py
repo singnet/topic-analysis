@@ -113,10 +113,13 @@ def feat(folder):
     print ("term-document matrix size", td.shape)
     print(td.shape[0],'terms by',td.shape[1],'docs')
     print("size of term-document matrix in bytes according to sys.getsizeof =",sys.getsizeof(td))
-    # num_topics = int(td.shape[1] / topic_divider)
+    if topic_divider == 0:
+        pass
+    else:
+        num_topics = int(td.shape[1] / topic_divider)
     # num_topics = 30
     # num_topics = 7
-    num_topics = 2
+    # num_topics = 2
     if (num_topics < 2):
         num_topics = 2
     # matrix_to_file(td)
@@ -127,7 +130,11 @@ def feat(folder):
     return td, vocab
 
 def K(D):
-    num_topics = int(D/topic_divider)
+    global num_topics
+    if topic_divider == 0:
+        pass
+    else:
+        num_topics = int(D/topic_divider)
     if (num_topics < 2):
         num_topics = 2
     return num_topics
