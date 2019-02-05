@@ -16,6 +16,7 @@ def tc(dataset, tokenizer=tokenize):
     for doc in dataset:
         if doc == '':
             continue
+        # print(doc)
         d = {} # token => count
 
         for term in tokenizer(doc):

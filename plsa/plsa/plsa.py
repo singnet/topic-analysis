@@ -346,10 +346,10 @@ class pLSA(object):
         Retrun: P(z,d)
         '''
         self.p_z_d= self.p_z*self.p_d_z
-        # print 'p_z_d-----'
-        # print (self.p_z_d.shape)
-        # print 'p_z_d.T-----'
-        # print (self.p_z_d.T.shape)
+        # print('p_z_d-----')
+        # print(self.p_z_d.shape)
+        # print('p_z_d.T-----')
+        # print(self.p_z_d.T.shape)
 
 
         return self.p_z_d.T  # T is for transpose

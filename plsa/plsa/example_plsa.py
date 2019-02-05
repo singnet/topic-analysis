@@ -21,6 +21,7 @@ import porter_dictionary
 
 # s_file_list = []
 
+empty_docs_list = []
 
 file_parts_number = 8
 # file_parts_number = 7 # Inspire
@@ -88,6 +89,12 @@ def feat(folder):
     #stemmer = PorterStemmer()
     #docs = stemmer.stem_documents(docs)
     td_dict, vocab = tc(docs)
+
+    for doc in range(len(docs)):
+        if docs[doc] == '':
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Empty doc detected with id:',doc)
+            empty_docs_list.append(doc)
+
     print ('len(td_dict) =', len(td_dict))
     print ('len(vocab) =',len(vocab))
     global number_of_words
@@ -305,13 +312,16 @@ def train(data, maxiter=500, debug=True):
         file_i=str(f_i).split('/')[file_parts_number]
         file_list.append(file_i)
 
+    print('>>>>>>> In method train:', empty_docs_list)
+    for edl in empty_docs_list:
+        # print(file_list[edl])
+        del file_list[edl]
 
     print('Dimenstionssssssssssssssssss')
     print("topic_list_len =",topic_list.__len__())
     print("p_z_d_len =", p_z_d.__len__())
     print("file_list_len =",file_list.__len__())
     print("p_z_d[0] =", p_z_d[0].__len__())
-
 
 
     topic_by_doc = open(PATH+'.csv', "w")
@@ -327,6 +337,10 @@ def train(data, maxiter=500, debug=True):
             topic_by_doc.write(str(p_z_d[i][j]))
         topic_by_doc.write('\n')
     topic_by_doc.close()
+
+    print('////////////////////////////')
+    print(p_z_d.__len__())
+    print(p_z_d[0].__len__())
 
 
     word_by_topic_conditional = open(PATH_word_by_topic_conditional+'.csv', "w")
