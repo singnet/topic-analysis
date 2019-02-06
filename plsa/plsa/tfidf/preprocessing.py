@@ -1,10 +1,13 @@
 import re
 import string
 import glob
+import json
 
 # file_list = []
 # file_parts_number = 9
 # file_parts_number = 8
+
+json_files_list = []
 
 def strip_punctuation(s):
     return re.sub("([%s]+)" % string.punctuation, " ", s)
@@ -93,6 +96,28 @@ def read_files(pattern):
     # global file_list
     # file_list = []
     return map(read_file, glob.glob(pattern))
+
+def read_json(path):
+    global json_files_list
+    with open(path, "r") as read_file:
+        ret = json.load(read_file)
+
+    for k in ret:
+        json_files_list.append(k)
+
+    print("||||||||||||||||||||||||||||||||")
+    # print(ret)
+
+    docs = []
+
+    for k in ret:
+        docs.append(ret[k])
+
+    # return docs
+    return map(mapper,docs)
+
+def mapper(s):
+    return s
 
 # def empty_file_list():
 #     global file_list

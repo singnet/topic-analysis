@@ -6,6 +6,7 @@ __author__ = 'masresha'
 import sys
 import pathlib
 import os
+import json
 
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa/preprocessing')
@@ -176,14 +177,19 @@ def return_cleaned(t1):
 
 
 def pre_pro():
-    fileList = glob.glob(source_texts)
-    fileList_len = fileList.__len__() - 1
+    # fileList = glob.glob(source_texts)
+    # fileList_len = fileList.__len__() - 1
+
+    cleaned_dict = {}
+
+    with open(source_texts, "r") as read_file:
+        fileList = json.load(read_file)
     k = 0
     print('------pre-process started-------')
     for files in fileList:
-        tFile = open(files)
+        tFile = fileList[files]
         # tFile = codecs.open(files, 'r', 'utf-8')
-        line = tFile.read().lower()
+        line = tFile.lower()
         # print(line)
         # print(type(line))
         # line = line.decode('utf-8')
@@ -268,14 +274,23 @@ def pre_pro():
 
                 port_dict.add_element(stemmed=term1,nonstemmed=temp_term1)
 
-        file_txt = open(output_dir + path.PurePath(files).parts[file_parts_number], "w")
+        # file_txt = open(output_dir + path.PurePath(files).parts[file_parts_number], "w")
+
+        temp = ''
 
         for i in por_tokens:
-            file_txt.write(i)
-            file_txt.write('\n')
-        file_txt.close()
+            temp = temp + i + '\n'
+
+        cleaned_dict[files] = temp
+
         # print('Processed ',k,'of',fileList_len)
         k = k + 1
+
+    file_json = output_dir + 'cleaned.json'
+
+    with open(file_json, "w") as f:
+        json.dump(cleaned_dict, f, indent=4)
+
     port_dict.write_dict_to_file(file_dict)
     print('***------pre-process finished--------')
 

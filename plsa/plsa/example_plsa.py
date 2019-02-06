@@ -11,7 +11,7 @@ import numpy as np
 
 # import taskmanager as tm
 import pandas as pd
-from tfidf.preprocessing import read_files, preprocess_documents
+from tfidf.preprocessing import read_files, preprocess_documents, read_json, json_files_list
 # from tfidf.porter import PorterStemmer
 from tfidf.tfidf import *
 # from tfidf.preprocessing import file_list, empty_file_list
@@ -67,21 +67,24 @@ print('RAM usage has been limited to {} GBs >>>>>>>>>>>>>>>>>>>>>>>>>>'.format(R
 
 def feat(folder):
     global num_topics
-    docs = list(preprocess_documents(read_files(os.path.join(folder, "*.txt"))))
+    # docs = list(preprocess_documents(read_files(os.path.join(folder, "*.txt"))))
+    docs = list(preprocess_documents(read_json(folder+"/cleaned.json")))
     assert(len(docs) > 0)
     print("len(docs) =",len(docs))
-    docs_2 = list(docs)
-    docs_reduced = reduce_docs(docs)
-
-
-    if docs_reduced.__len__() != docs_2.__len__():
-
-        list_1 = docs_to_delete(docs=docs_2, docs_red=docs_reduced)
-        delete_docs(list_1)
-
-        docs = preprocess_documents(read_files(os.path.join(folder, "*.txt")))
-        assert(len(docs) > 0)
-        print("len(docs) =",len(docs))
+    # Uncomment this later and fix it with the new json theme
+    # docs_2 = list(docs)
+    # docs_reduced = reduce_docs(docs)
+    #
+    #
+    # if docs_reduced.__len__() != docs_2.__len__():
+    #
+    #     list_1 = docs_to_delete(docs=docs_2, docs_red=docs_reduced)
+    #     delete_docs(list_1)
+    #
+    #     docs = preprocess_documents(read_files(os.path.join(folder, "*.txt")))
+    #     assert(len(docs) > 0)
+    #     print("len(docs) =",len(docs))
+    # Uncomment ends here
 
     # num_topics = int(len(docs) / topic_divider)
     # if(num_topics < 2):
@@ -90,9 +93,12 @@ def feat(folder):
     #docs = stemmer.stem_documents(docs)
     td_dict, vocab = tc(docs)
 
+    print("'''''''''''''''''''''''''''''''")
+    # print(td_dict)
+
     for doc in range(len(docs)):
         if docs[doc] == '':
-            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Empty doc detected with id:',doc)
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Empty doc detected with id:',doc,' and file name is:',json_files_list[doc])
             empty_docs_list.append(doc)
 
     print ('len(td_dict) =', len(td_dict))
@@ -309,15 +315,9 @@ def train(data, maxiter=500, debug=True):
     # Bug update over
 
 
-    file_list = []
-    pattern_1 = os.path.join(folder, "*.txt")
-
-    f = glob.glob(pattern_1)
-
-    for f_i in f:
-        # print(f_i)
-        file_i=str(f_i).split('/')[file_parts_number]
-        file_list.append(file_i)
+    file_list = json_files_list
+    print('"""""""""""""""""""""""""""""')
+    # print(file_list)
 
     print('>>>>>>> In method train:', empty_docs_list)
     for edl in empty_docs_list:
