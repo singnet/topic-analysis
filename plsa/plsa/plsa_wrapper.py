@@ -15,6 +15,9 @@ import json
 
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa/preprocessing')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa/plsa')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa/preprocessing')
+
 
 import example_plsa as pplsa
 import cleansing as pclean

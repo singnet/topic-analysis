@@ -7,11 +7,20 @@ message PLSARequest {
 
     repeated string docs = 1;
     repeated string edges = 2;
+    sint64 num_topics = 3;
+    sint64 topic_divider = 4;
+    sint64 maxiter = 5;
+    float beta = 6;
 }
 
 message PLSAResponse{
 
     repeated string topics = 1;
+    repeated float topicByDocMatirx = 2;
+    repeated float topicProbabilities = 3;
+    repeated float wordByTopicConditional =4;
+    repeated float logLikelihoods = 5;
+
 
 }
 
@@ -24,7 +33,7 @@ message PLSAResponse{
 service NetowrkAnalyticsBipartite {
 
 
-    rpc BipartiteGraph (PLSARequest) returns (PLSAResponse) {};
+    rpc plsa (PLSARequest) returns (PLSAResponse) {};
 
 
 }
