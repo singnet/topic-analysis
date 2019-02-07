@@ -100,8 +100,6 @@ class TopicAnalysis:
         self.output_dir_stream = pclean.output_dir
         self.file_dict_stream = pclean.file_dict
 
-
-
         os.mkdir(pplsa.PLSA_PARAMETERS_PATH)
 
         pplsa.main()
