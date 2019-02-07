@@ -45,8 +45,10 @@ import inspect
 
 # beta2 = 0.75
 beta2 = 1
+eps2=0.01
+maxiter2=22
+HAVE_EXT = False
 # HAVE_EXT = True
-HAVE_EXT = True
 min_iteration2 = 10 # 10 was the previous value
 init_with_seed = False
 
@@ -110,7 +112,7 @@ def loglikelihood(td, p_z, p_w_z, p_d_z):
 def train(td,
           p_z, p_w_z, p_d_z,
           p_z_old, p_w_z_old, p_d_z_old,
-          maxiter, eps,
+          maxiter, eps,beta,min_iteration,
           folding_in, debug,logL_c):
 
     logL = []
@@ -120,7 +122,8 @@ def train(td,
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
     logL.append(lik)
     print ('Starting logL =',lik)
-    # beta2 = 1
+    # beta = 1
+    counter = 0
     for iteration in range(1, maxiter+1):
         # Swap old and new
         p_d_z_old, p_d_z = (p_d_z, p_d_z_old)
@@ -133,35 +136,36 @@ def train(td,
             p_w_z *= 0.0
             p_z *= 0.0
 
-        if (beta2 != 1):
+        if (beta != 1):
             print ('tempering started')
-            p_z_old = np.power(p_z_old, beta2)
+            p_z_old = np.power(p_z_old, beta)
             # print('Finished','p_z_old')
-            # beta2 = 1
-            p_d_z_old = np.power(p_d_z_old, beta2)
+            # beta = 1
+            p_d_z_old = np.power(p_d_z_old, beta)
             # print('Finished','p_d_z_old')
-            p_w_z_old = np.power(p_w_z_old, beta2)
+            p_w_z_old = np.power(p_w_z_old, beta)
             # print('Finished','p_w_z_old')
             print ('tempering finished')
 
 
         for w,d in zip(*td.nonzero()):
             # E-step
-            # beta2 = 0.75
+            # beta = 0.75
 
             p_z_d_w = p_z_old * p_d_z_old[d, :] * p_w_z_old[w, :]
 
-            # if (beta2 ==1):
+            # if (beta ==1):
             #     p_z_d_w = p_z_old * p_d_z_old[d,:] * p_w_z_old[w,:]
             # else:
-            #     p_z_old_beta2 = np.power(p_z_old,beta2)
-            #     # print('Finished','p_z_old_beta2')
-            #     # beta2 = 1
-            #     p_d_z_old_beta2 = np.power(p_d_z_old,beta2)
-            #     # print('Finished','p_d_z_old_beta2')
-            #     p_w_z_old_beta2 = np.power(p_w_z_old,beta2)
-            #     # print('Finished','p_w_z_old_beta2')
-            #     p_z_d_w = p_z_old_beta2 * p_d_z_old_beta2[d,:] * p_w_z_old_beta2[w,:]
+            #     p_z_old_beta = np.power(p_z_old,beta)
+            #     # print('Finished','p_z_old_beta')
+            #     # beta = 1
+            #     p_d_z_old_beta = np.power(p_d_z_old,beta)
+            #     # print('Finished','p_d_z_old_beta')
+            #     p_w_z_old_beta = np.power(p_w_z_old,beta)
+            #     # print('Finished','p_w_z_old_beta')
+            #     p_z_d_w = p_z_old_beta * p_d_z_old_beta[d,:] * p_w_z_old_beta[w,:]
+            #     p_z_d_w = p_z_old_beta * p_d_z_old_beta[d,:] * p_w_z_old_beta[w,:]
             #     # print('Finished','p_z_d_w')
                 
 
@@ -177,6 +181,8 @@ def train(td,
             if not folding_in:
                 p_w_z[w,:] += s
                 p_z += s
+
+            counter = iteration
 
         # normalize
         normalize(p_d_z, axis=0, out=p_d_z)
@@ -212,13 +218,21 @@ def train(td,
             print ("lik_diff =",lik_diff,'%')
 
 
-        if iteration > min_iteration2 and lik_diff < eps :
+        if iteration > min_iteration and lik_diff < eps :
             print ("No more progress, stopping EM at iteration", iteration)
             print ("LogL =", logL)
             axis1 = range(1,len(logL)+1)
             plt.plot(axis1, logL)
             plt.savefig(logL_pic)
             break
+
+
+    print('Stopped at iteration ',counter)
+
+    print("LogL =", logL)
+    axis1 = range(1, len(logL) + 1)
+    plt.plot(axis1, logL)
+    plt.savefig(logL_pic)
 
 
 
@@ -272,7 +286,7 @@ class pLSA(object):
             # np.savetxt("pdz.csv", self.p_d_z, delimiter=",")
 
 
-    def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False,beta=beta2,min_iteration = min_iteration2): # eps=0.01 is default value
+    def train(self, td, Z, maxiter=maxiter2, eps=eps2, folding_in=False,beta=beta2,min_iteration = min_iteration2): # eps=0.01 is default value
         """
         Train the model.
 
@@ -288,6 +302,9 @@ class pLSA(object):
         p_d_z_old = np.zeros_like(self.p_d_z)
         p_w_z_old = np.zeros_like(self.p_w_z)
         p_z_old = np.zeros_like(self.p_z)
+
+        global logL_pic
+        logL_pic = self.logL_pic
 
         train_func = _plsa.train if HAVE_EXT else train
         print('RRRRRRRRRRRRRRRAM used just before training:', float(list(psutil.virtual_memory())[3]) / 1073741824.0, 'GB')

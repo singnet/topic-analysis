@@ -57,6 +57,7 @@ maxiter2 = 22
 beta = 1
 min_iteration = 10
 logL_pic = ''
+eps = 0.01
 number_of_words = 0
 number_of_docs = 0
 RAM_limit = 25 # In giga bytes
