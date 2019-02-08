@@ -1,3 +1,7 @@
 .idea/
 *~
 plsa/__pycache__/
+plsa/plsa/_plsa.c
+service_spec/__pycache__/
+service_spec/topic_analysis_pb2.py
+service_spec/topic_analysis_pb2_grpc.py

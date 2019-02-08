@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+
+
+
+message PLSARequest {
+
+    repeated string docs = 1;
+    sint64 num_topics = 2;
+    sint64 topic_divider = 3;
+    sint64 maxiter = 4;
+    float beta = 5;
+}
+
+message PLSAResponse{
+
+    bool status = 1;
+    string message = 2;
+    repeated string topics = 3;
+    repeated float topicByDocMatirx = 4;
+    repeated float topicProbabilities = 5;
+    repeated float wordByTopicConditional = 6;
+    repeated float logLikelihoods = 7;
+
+
+}
+
+
+
+
+
+///// Topic analysis Services
+
+service TopicAnalysis {
+
+
+    rpc PLSA (PLSARequest) returns (PLSAResponse) {};
+
+
+}
+
+///// End Network Analytics Services

@@ -13,21 +13,25 @@ import datetime
 import time
 import json
 
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa/plsa')
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa/preprocessing')
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa/plsa')
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa/preprocessing')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/preprocessing')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa-service/plsa')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa-service/preprocessing')
 
 
 import example_plsa as pplsa
 import cleansing as pclean
 
-class TopicAnalysis:
+class PLSA_wrapper:
 
-    def __init__(self, docs):
+    def __init__(self, docs,local=False):
 
         self.docs = docs
-        self.root_path = str(pathlib.Path(os.path.abspath('')).parents[2]) + '/appData/plsa/'
+        if not local:
+            self.root_path = str(pathlib.Path(os.path.abspath('')).parents[0]) + '/appData/plsa/'
+        else:
+            self.root_path = str(pathlib.Path(os.path.abspath('')).parents[2]) + '/appData/plsa/'
+        print('>>>>>>>>>>>>>self.root_path>>>>>>>>>>>')
         print(self.root_path)
         self.extracted_folder = self.root_path + 'extracted/'
         self.file_dict = self.root_path + 'dict/'
@@ -117,7 +121,7 @@ class TopicAnalysis:
 
 def run_plsa():
 
-    path = ''
+    path = str(pathlib.Path(os.path.abspath('')).parents[2])+'/appData/misc/extracted.json'
 
     docs = []
 
@@ -128,7 +132,7 @@ def run_plsa():
     for k in fileList:
         docs.append(fileList[k])
 
-    s = TopicAnalysis(docs)
+    s = PLSA_wrapper(docs,local=True)
     s.write_to_json()
     s.generate_topics_json()
 

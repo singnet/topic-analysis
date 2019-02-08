@@ -10,7 +10,6 @@ import logging
 import numpy as np
 
 
-
 # import taskmanager as tm
 import pandas as pd
 from tfidf.preprocessing import read_files, preprocess_documents, read_json, json_files_list
@@ -503,5 +502,7 @@ def main():
     # word_cluster(model)
     # word_topics(model)
     # document_topics(model)
+
+
 if __name__ == "__main__":
     main()
