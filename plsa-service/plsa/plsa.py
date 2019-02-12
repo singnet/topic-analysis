@@ -232,6 +232,10 @@ def train(td,
     axis1 = range(1, len(logL) + 1)
     plt.plot(axis1, logL)
     plt.savefig(logL_pic)
+    with open(logL_pic[:-4]+'.txt','w') as f:
+        for l in logL:
+            f.write(str(l))
+            f.write('\n')
 
 
 
@@ -327,6 +331,10 @@ class pLSA(object):
             plt.plot(axis1, logL_c_list)
             # print('logL_pic=',self.logL_pic)
             plt.savefig(self.logL_pic)
+            with open(logL_pic[:-4] + '.txt', 'w') as f:
+                for l in logL_c_list:
+                    f.write(str(l))
+                    f.write('\n')
 
         return self.get_model()
 

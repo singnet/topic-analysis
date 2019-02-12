@@ -9,13 +9,13 @@ message PLSARequest {
     sint64 num_topics = 2;
     sint64 topic_divider = 3;
     sint64 maxiter = 4;
-    float beta = 5;
+    double beta = 5;
 }
 
 
 message FloatRow{
 
-    repeated float floatRow = 1;
+    repeated double doubleValue = 1;
 }
 
 message PLSAResponse{
@@ -25,9 +25,9 @@ message PLSAResponse{
     repeated string docs_list = 3;
     repeated string topics = 4;
     repeated FloatRow topicByDocMatirx = 5;
-    repeated float topicProbabilities = 6;
-    repeated float wordByTopicConditional = 7;
-    repeated float logLikelihoods = 8;
+    repeated double topicProbabilities = 6;
+    repeated FloatRow wordByTopicConditional = 7;
+    repeated double logLikelihoods = 8;
 
 
 }
