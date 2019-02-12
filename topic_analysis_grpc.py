@@ -89,6 +89,8 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
                 topics = f.read().splitlines()
 
             topic_by_doc = []
+            word_by_topic_conditional = []
+            logLikelihoods = []
             docs_list = []
 
             with open(s.PLSA_PARAMETERS_PATH+'topic-by-doc-matirx.csv') as csv_file:
@@ -97,19 +99,35 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
                 docs_list = next(csv_reader)[1:]
 
                 for row in csv_reader:
-                    topic_by_doc.append(topic_analysis_pb2.FloatRow(floatRow=list((np.array(row[1:])).astype(np.float))))
-
-            resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',docs_list=docs_list,topics=topics,topicByDocMatirx=topic_by_doc)
-            # resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',topics=topics)
+                    topic_by_doc.append(topic_analysis_pb2.FloatRow(doubleValue=list((np.array(row[1:])).astype(np.float))))
 
 
+            with open(s.PLSA_PARAMETERS_PATH+'topic_probability_pz','r') as f:
+                topic_probabilities = f.read().splitlines()
 
-        #         resp = network_analytics_bipartite_pb2.BipartiteGraphResponse(status=ret[0], message=ret[1], output=graph_resp)
-        #
-        #
-        #     print('status:',resp.status)
-        #     print('message:',resp.message)
-        #     print('Waiting for next call on port 5000.')
+                topic_probabilities = list((np.array(topic_probabilities)).astype(np.float))
+
+
+            with open(s.PLSA_PARAMETERS_PATH+'word_by_topic_conditional.csv') as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+
+                for row in csv_reader:
+                    word_by_topic_conditional.append(topic_analysis_pb2.FloatRow(doubleValue=list((np.array(row[:-1])).astype(np.float))))
+
+            with open(s.PLSA_PARAMETERS_PATH+'logL.txt','r') as f:
+                logLikelihoods = f.read().splitlines()
+
+                logLikelihoods = list((np.array(logLikelihoods)).astype(np.float))
+
+
+            resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',docs_list=docs_list,topics=topics,topicByDocMatirx=topic_by_doc,topicProbabilities=topic_probabilities,wordByTopicConditional=word_by_topic_conditional,logLikelihoods=logLikelihoods)
+
+
+
+
+            print('status:',resp.status)
+            print('message:',resp.message)
+            print('Waiting for next call on port 5000.')
 
             return resp
 
