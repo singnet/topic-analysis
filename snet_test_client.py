@@ -58,7 +58,8 @@ def csv_reader():
 
 
 def try_plsa():
-    channel = grpc.insecure_channel('localhost:5000')
+    channel = grpc.insecure_channel('localhost:500')
+    # channel = grpc.insecure_channel('172.17.0.75:5001')
     stub = topic_analysis_pb2_grpc.TopicAnalysisStub(channel)
 
 

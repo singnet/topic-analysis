@@ -2,14 +2,14 @@ FROM ubuntu:18.04
 
 #ARG CACHEBUST
 
-RUN apt-get update && apt-get install -y apt-utils sudo 
+RUN echo 1 && apt-get update && apt-get install -y apt-utils sudo
 
 
-RUN adduser --disabled-password --gecos "snetservice user" netk && \
-	adduser netk sudo && \
+RUN adduser --disabled-password --gecos "snetservice user" top && \
+	adduser top sudo && \
 	echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER netk
+USER top
 
 #RUN whoami
 
@@ -17,12 +17,12 @@ RUN sudo apt-get install -y git \
 	build-essential \
 	python3.6 \
 	python3.6-dev \
-	python3-pip \
-	wget \
-	curl
+	python3-pip
+
+RUN sudo apt-get install -y wget curl vim
 
 
-WORKDIR /home/netk/
+WORKDIR /home/top/
 
 RUN curl https://bootstrap.pypa.io/get-pip.py | sudo python3.6
 
@@ -34,24 +34,24 @@ WORKDIR /tmp
 COPY requirements.txt /tmp/
 RUN sudo pip install -r requirements.txt
 RUN echo 1
-COPY requirements_2.txt /tmp/
-RUN sudo pip install -r requirements_2.txt
+RUN python3.6 -m nltk.downloader all
 
-WORKDIR /home/netk/
+
+WORKDIR /home/top/
 RUN mkdir dep
-WORKDIR /home/netk/dep
+WORKDIR /home/top/dep
 
 #RUN git clone https://github.com/singnet/network-analytics-services.git && \
 #	cd network-analytics-services
 
-#RUN echo 8 && \
-#	git clone https://github.com/edyirdaw/network-analytics-services.git && \
-#	cd network-analytics-services && \
-#	git checkout --track origin/example_bipartition
+RUN whoami
 
-#RUN pwd
+RUN echo 13 && \
+	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
 
-#RUN cd network-analytics-services/services && python3.6 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. network_analytics_bipartite.proto
+WORKDIR /home/top/dep/topic-analysis
 
-#WORKDIR /home/netk/network-analytics-services/services
+RUN pwd
+RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+
 
