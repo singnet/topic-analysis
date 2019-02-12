@@ -31,7 +31,6 @@ Notation:
     Z: number of topics
 
 """
-
 import psutil
 import numpy as np
 import matplotlib

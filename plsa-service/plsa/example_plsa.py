@@ -9,6 +9,7 @@ import random
 import logging
 import numpy as np
 
+
 # import taskmanager as tm
 import pandas as pd
 from tfidf.preprocessing import read_files, preprocess_documents, read_json, json_files_list
@@ -16,7 +17,8 @@ from tfidf.preprocessing import read_files, preprocess_documents, read_json, jso
 from tfidf.tfidf import *
 # from tfidf.preprocessing import file_list, empty_file_list
 
-from plsa import pLSA
+# from plsa import pLSA
+import plsa as plsa1
 import porter_dictionary
 
 # s_file_list = []
@@ -286,7 +288,7 @@ def train(data, maxiter=500, debug=True):
 
     td, vocab = data
     # td = td[:,:-1]
-    plsa = pLSA()
+    plsa = plsa1.pLSA()
     plsa.debug = debug
     plsa.logL_pic = logL_pic
     # model=plsa.train(td, num_topics, maxiter)
@@ -386,7 +388,7 @@ def train(data, maxiter=500, debug=True):
 def average_train(data, maxiter=500, debug=True):
     td, idf, vocab = data
     td = td[:,:-1]
-    plsa = pLSA()
+    plsa = plsa1.pLSA()
     plsa.debug = debug
     return plsa.average_train(10)(td, 10, maxiter)
 
@@ -394,14 +396,14 @@ def average_train(data, maxiter=500, debug=True):
 def folding_in(data, model, maxiter=30, debug=True):
     td, idf, vocab = data
     d = td[:,-1]
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     plsa.debug = debug
     print (plsa.folding_in(d, maxiter))
 
 # @tm.nocache
 # @tm.task(train)
 def document_topics(model):
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     for i in  plsa.document_topics():
        print (i)
        # file_txt1.write(str(i))
@@ -411,13 +413,13 @@ def document_topics(model):
 # @tm.nocache
 # @tm.task(train)
 def document_cluster(model):
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     print (plsa.document_cluster())
 
 # @tm.nocache
 # @tm.task(train)
 def word_topics(model):
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     for i in  plsa.word_topics():
        print (i)
        # file_txt1.write(str(i))
@@ -427,13 +429,13 @@ def word_topics(model):
 # @tm.nocache
 # @tm.task(train)
 def word_cluster(model):
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     print (plsa.word_cluster())
 
 # @tm.nocache
 # @tm.task(train)
 def unigram_smoothing(model):
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     print (plsa.unigram_smoothing())
 
 # @tm.nocache
@@ -445,7 +447,7 @@ def topic_labels(data, model, N=50):
     port_dict.load_dict(dict_path)
     # print port_dict.dictionary
     td, vocab = data
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     inv_vocab = inverse_vocab(vocab)
     dict_vocab=[]
     # vocab_list=[x for x in inv_vocab[1]]
@@ -470,7 +472,7 @@ def topic_labels(data, model, N=50):
 # @tm.task(feat, train)
 def global_weights(data, model):
     td, idf, vocab = data
-    plsa = pLSA(model)
+    plsa = plsa1.pLSA(model)
     print (plsa.global_weights(idf))
 
 def main():
@@ -500,5 +502,7 @@ def main():
     # word_cluster(model)
     # word_topics(model)
     # document_topics(model)
+
+
 if __name__ == "__main__":
     main()

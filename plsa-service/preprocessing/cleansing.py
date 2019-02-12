@@ -20,7 +20,8 @@ from nltk.corpus import stopwords
 import pathlib as path
 from stemming.porter2 import stem
 import string
-import preprocessing.porter_dictionary as pp
+# import preprocessing.porter_dictionary as pp
+import porter_dictionary as pp
 # import re
 
 port_dict = pp.porter_dictionary()
