@@ -7,6 +7,8 @@ import logging
 import sys
 import pathlib
 import os
+import csv
+import numpy as np
 
 
 SLEEP_TIME = 86400 # One day
@@ -84,10 +86,21 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
             s.generate_topics_json()
 
             with open(s.PLSA_PARAMETERS_PATH+'plsa_topics.txt','r') as f:
-                lines = f.readlines()
+                topics = f.read().splitlines()
 
+            topic_by_doc = []
+            docs_list = []
 
-            resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',topics=lines)
+            with open(s.PLSA_PARAMETERS_PATH+'topic-by-doc-matirx.csv') as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+
+                docs_list = next(csv_reader)[1:]
+
+                for row in csv_reader:
+                    topic_by_doc.append(topic_analysis_pb2.FloatRow(floatRow=list((np.array(row[1:])).astype(np.float))))
+
+            resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',docs_list=docs_list,topics=topics,topicByDocMatirx=topic_by_doc)
+            # resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',topics=topics)
 
 
 
