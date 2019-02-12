@@ -1,0 +1,12 @@
+jsonrpcserver
+jsonrpcclient
+grpcio
+grpcio_tools
+numpy
+pandas
+scipy
+psutil
+tables
+matplotlib
+nltk
+stemming==1.0
