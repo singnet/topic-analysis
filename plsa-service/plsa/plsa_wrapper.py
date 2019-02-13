@@ -12,6 +12,7 @@ import random
 import datetime
 import time
 import json
+import logging
 
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/preprocessing')
@@ -44,7 +45,11 @@ class PLSA_wrapper:
         self.PLSA_PARAMETERS_PATH = ''
 
         # self.messages
-        # self.unique_folder_naming
+        self.unique_folder_naming = None
+        self.num_topics = None
+        self.topic_divider = None
+        self.max_iter = None
+        self.beta = None
 
     def __del__(self):
 
@@ -57,7 +62,7 @@ class PLSA_wrapper:
 
 
 
-        self.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
+        # self.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
         print(self.unique_folder_naming)
 
         os.mkdir(self.extracted_folder+self.unique_folder_naming)
@@ -90,11 +95,20 @@ class PLSA_wrapper:
 
 
         # Do cleansing on the data and turing it to bad-of-words model
+
+        with open(self.plsa_parameters_path + self.unique_folder_naming+'status.txt','w') as f:
+            f.write('Preprocessing started.')
+
         pclean.pre_pro()
 
+        with open(self.plsa_parameters_path + self.unique_folder_naming+'status.txt','w') as f:
+            f.write('Preprocessing finished. Topic analysis started.')
+
         # Train using PLSA
-        pplsa.topic_divider = 0
-        pplsa.num_topics = 2
+        pplsa.topic_divider = self.topic_divider
+        pplsa.num_topics = self.num_topics
+        pplsa.maxiter2 = self.max_iter
+        pplsa.beta = self.beta
         pplsa.folder = pclean.output_dir[:-1]
         pplsa.dict_path = pclean.file_dict
         pplsa.PLSA_PARAMETERS_PATH = self.plsa_parameters_path + self.unique_folder_naming
@@ -107,13 +121,23 @@ class PLSA_wrapper:
         self.output_dir_stream = pclean.output_dir
         self.file_dict_stream = pclean.file_dict
 
-        os.mkdir(pplsa.PLSA_PARAMETERS_PATH)
+
+        try:
+            os.mkdir(pplsa.PLSA_PARAMETERS_PATH)
+        except:
+            print('-----------------------Folder exists-------------------------')
+
 
         pplsa.main()
+
 
         end_time_1 = time.time()
 
         print('Total training time took:',round((end_time_1 - start_time_1) / 60, 4))
+
+        with open(self.plsa_parameters_path + self.unique_folder_naming+'status.txt','w') as f:
+            f.write('Topic analysis finished.\n')
+            f.write(str(round((end_time_1 - start_time_1) / 60, 4)))
 
 
 

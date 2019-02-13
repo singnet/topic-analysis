@@ -58,12 +58,12 @@ def csv_reader():
 
 
 def try_plsa():
-    channel = grpc.insecure_channel('localhost:500')
+    channel = grpc.insecure_channel('localhost:5000')
     # channel = grpc.insecure_channel('172.17.0.75:5001')
     stub = topic_analysis_pb2_grpc.TopicAnalysisStub(channel)
 
 
-    plsa_request = topic_analysis_pb2.PLSARequest(docs=sample_data(),num_topics=3,maxiter=22,beta=1)
+    plsa_request = topic_analysis_pb2.PLSARequest(docs=sample_data(),num_topics=3,maxiter=50,beta=0.6)
 
     resp = stub.PLSA(plsa_request)
 
@@ -72,18 +72,7 @@ def try_plsa():
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
     print(resp.message)
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.docs_list)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.topics)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.topicByDocMatirx)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.topicProbabilities)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.wordByTopicConditional)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(resp.logLikelihoods)
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    print(resp.handle)
 
 
 

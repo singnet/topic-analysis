@@ -9,6 +9,8 @@ import pathlib
 import os
 import csv
 import numpy as np
+import datetime
+import random
 
 
 SLEEP_TIME = 86400 # One day
@@ -19,15 +21,8 @@ sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analys
 
 print(sys.path)
 
-# import example_plsa as pplsa
-# import plsa as plsa1
-# import cleansing as pclean
-#
-#
-# import random
-# import json
-# import datetime
 import plsa_wrapper
+import threading
 
 from service_spec import topic_analysis_pb2
 from service_spec import topic_analysis_pb2_grpc
@@ -81,48 +76,12 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
 
         try:
 
-            s = plsa_wrapper.PLSA_wrapper(docs)
-            s.write_to_json()
-            s.generate_topics_json()
+            unique_folder_naming = str(datetime.datetime.now()).replace(':', '-').replace('.', '-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
 
-            with open(s.PLSA_PARAMETERS_PATH+'plsa_topics.txt','r') as f:
-                topics = f.read().splitlines()
+            thread1 = threading.Thread(target=generate_topics_plsa, args=(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta))
+            thread1.start()
 
-            topic_by_doc = []
-            word_by_topic_conditional = []
-            logLikelihoods = []
-            docs_list = []
-
-            with open(s.PLSA_PARAMETERS_PATH+'topic-by-doc-matirx.csv') as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
-
-                docs_list = next(csv_reader)[1:]
-
-                for row in csv_reader:
-                    topic_by_doc.append(topic_analysis_pb2.FloatRow(doubleValue=list((np.array(row[1:])).astype(np.float))))
-
-
-            with open(s.PLSA_PARAMETERS_PATH+'topic_probability_pz','r') as f:
-                topic_probabilities = f.read().splitlines()
-
-                topic_probabilities = list((np.array(topic_probabilities)).astype(np.float))
-
-
-            with open(s.PLSA_PARAMETERS_PATH+'word_by_topic_conditional.csv') as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
-
-                for row in csv_reader:
-                    word_by_topic_conditional.append(topic_analysis_pb2.FloatRow(doubleValue=list((np.array(row[:-1])).astype(np.float))))
-
-            with open(s.PLSA_PARAMETERS_PATH+'logL.txt','r') as f:
-                logLikelihoods = f.read().splitlines()
-
-                logLikelihoods = list((np.array(logLikelihoods)).astype(np.float))
-
-
-            resp = topic_analysis_pb2.PLSAResponse(status=True,message='success',docs_list=docs_list,topics=topics,topicByDocMatirx=topic_by_doc,topicProbabilities=topic_probabilities,wordByTopicConditional=word_by_topic_conditional,logLikelihoods=logLikelihoods)
-
-
+            resp = topic_analysis_pb2.PLSAResponse(status=True, message='success', handle=unique_folder_naming[:-1])
 
 
             print('status:',resp.status)
@@ -144,6 +103,38 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
 
             return resp
 
+
+def generate_topics_plsa(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta):
+
+    # Put try catch here and add status
+
+    s = plsa_wrapper.PLSA_wrapper(docs)
+
+    try:
+
+        os.mkdir(s.plsa_parameters_path+unique_folder_naming)
+
+        # 1/0
+
+        with open(s.plsa_parameters_path+unique_folder_naming+'status.txt','w') as f:
+            f.write('Analysis started.')
+
+        s.unique_folder_naming = unique_folder_naming
+        s.num_topics = num_topics
+        s.topic_divider = topic_divider
+        s.max_iter = maxiter
+        s.beta = beta
+        s.write_to_json()
+        s.generate_topics_json()
+
+    except Exception as e:
+
+        logging.exception("message")
+
+        with open(s.plsa_parameters_path+unique_folder_naming+'status.txt','w') as f:
+            f.write('Failed.')
+            f.write('\n')
+            f.write(str(e))
 
 
 

@@ -22,12 +22,7 @@ message PLSAResponse{
 
     bool status = 1;
     string message = 2;
-    repeated string docs_list = 3;
-    repeated string topics = 4;
-    repeated FloatRow topicByDocMatirx = 5;
-    repeated double topicProbabilities = 6;
-    repeated FloatRow wordByTopicConditional = 7;
-    repeated double logLikelihoods = 8;
+    string handle = 3;
 
 
 }

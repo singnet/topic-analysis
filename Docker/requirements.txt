@@ -10,3 +10,4 @@ tables
 matplotlib
 nltk
 stemming==1.0
+flask-httpauth
