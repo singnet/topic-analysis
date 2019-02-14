@@ -21,6 +21,7 @@ auth = HTTPBasicAuth()
 app = Flask(__name__)
 
 
+status_list = ['Analysis started.','Preprocessing started.','Preprocessing finished. Topic analysis started.','Topic analysis finished.','Failed.']
 
 # '/topic-analysis/api/v1.0/results'
 @app.route('/topic-analysis/api/v1.0/results', methods=['GET'])
@@ -32,8 +33,8 @@ def results():
         # Code to test exception handler for this try
         # a=1/0
 
-        print('In generate_topics:', time.strftime("%c"))
-        handle = request.args['handle']
+        print('In results:', time.strftime("%c"))
+        handle = request.args['handle'].replace('e','-').replace('d',' ').replace('y','^')
         print("handle =", handle)
 
     except Exception as e:
@@ -48,6 +49,16 @@ def results():
 
         parameters_path = str(pathlib.Path(os.path.abspath('')).parents[0]) + '/appData/plsa/' + 'plsa-parameters/' + handle + '/'
         print(parameters_path)
+
+
+        with open(parameters_path + 'status.txt', 'r') as f:
+            status = f.read().splitlines()
+
+        if status[0] not in status_list:
+            return make_response(jsonify({'Error': 'Analysis ended unexpectedly, corrupt status file or status file not written yet', "error_msg": ''}), 500)
+
+        if status[0] != 'Topic analysis finished.':
+            return make_response(jsonify({'status':status}), 200)
 
         with open(parameters_path + 'plsa_topics.txt', 'r') as f:
             topics = f.read().splitlines()
@@ -81,10 +92,17 @@ def results():
 
             logLikelihoods = list((np.array(logLikelihoods)).astype(np.float))
 
-        # resp = topic_analysis_pb2.PLSAResponse(status=True, message='success', docs_list=docs_list, topics=topics,
-        #                                        topicByDocMatirx=topic_by_doc, topicProbabilities=topic_probabilities,
-        #                                        wordByTopicConditional=word_by_topic_conditional,
-        #                                        logLikelihoods=logLikelihoods)
+        resp = {}
+        resp['status'] = status[0]
+        resp['total running time in minutes'] = float(status[1])
+        resp['docs_list'] = docs_list
+        resp['topics'] = topics
+        resp['topicByDocMatirx'] = topic_by_doc
+        resp['topicProbabilities'] = topic_probabilities
+        resp['wordByTopicConditional'] = word_by_topic_conditional
+        resp['logLikelihoods'] = logLikelihoods
+
+        return make_response(jsonify(resp), 200)
 
 
     except Exception as e:
@@ -119,4 +137,4 @@ if __name__ == '__main__':
 
 
     # app.run(debug=True)
-    app.run(debug=False)
+    app.run(debug=False,port=4999)
