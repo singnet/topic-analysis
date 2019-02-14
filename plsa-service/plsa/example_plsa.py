@@ -323,7 +323,7 @@ def train(data, maxiter=500, debug=True):
     # print(file_list)
 
     print('>>>>>>> In method train:', empty_docs_list)
-    for edl in empty_docs_list:
+    for edl in sorted(empty_docs_list, reverse=True):
         # print(file_list[edl])
         del file_list[edl]
 
