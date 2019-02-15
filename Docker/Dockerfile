@@ -36,6 +36,10 @@ RUN sudo pip install -r requirements.txt
 RUN echo 1
 RUN python3.6 -m nltk.downloader all
 
+RUN sudo apt-get install -y supervisor
+
+COPY requirements_2.txt /tmp/
+RUN sudo pip install -r requirements_2.txt
 
 WORKDIR /home/top/
 RUN mkdir dep

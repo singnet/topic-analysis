@@ -23,7 +23,7 @@ class TestTopicAnalysisGrpc(unittest.TestCase):
         self.app = analysis_results.app.test_client()
         self.docs = []
 
-        sample_doc = 'docs/test_doc.txt'
+        sample_doc = 'docs/tests/test_doc.txt'
         with open(sample_doc,'r') as f:
             self.docs = f.read().splitlines()
 
