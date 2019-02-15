@@ -63,7 +63,7 @@ def try_plsa():
     stub = topic_analysis_pb2_grpc.TopicAnalysisStub(channel)
 
 
-    plsa_request = topic_analysis_pb2.PLSARequest(docs=sample_data(),num_topics=3,maxiter=50,beta=0.6)
+    plsa_request = topic_analysis_pb2.PLSARequest(docs=sample_data(),num_topics=2,maxiter=22,beta=1)
 
     resp = stub.PLSA(plsa_request)
 

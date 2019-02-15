@@ -7,7 +7,6 @@ import json
 # file_parts_number = 9
 # file_parts_number = 8
 
-json_files_list = []
 
 def strip_punctuation(s):
     return re.sub("([%s]+)" % string.punctuation, " ", s)
@@ -98,9 +97,10 @@ def read_files(pattern):
     return map(read_file, glob.glob(pattern))
 
 def read_json(path):
-    global json_files_list
     with open(path, "r") as read_file:
         ret = json.load(read_file)
+
+    json_files_list = []
 
     for k in ret:
         json_files_list.append(k)
@@ -114,7 +114,7 @@ def read_json(path):
         docs.append(ret[k])
 
     # return docs
-    return map(mapper,docs)
+    return map(mapper,docs),json_files_list
 
 def mapper(s):
     return s

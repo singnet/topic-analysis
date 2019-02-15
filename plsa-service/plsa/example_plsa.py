@@ -12,7 +12,7 @@ import numpy as np
 
 # import taskmanager as tm
 import pandas as pd
-from tfidf.preprocessing import read_files, preprocess_documents, read_json, json_files_list
+from tfidf.preprocessing import read_files, preprocess_documents, read_json
 # from tfidf.porter import PorterStemmer
 from tfidf.tfidf import *
 # from tfidf.preprocessing import file_list, empty_file_list
@@ -23,7 +23,6 @@ import porter_dictionary
 
 # s_file_list = []
 
-empty_docs_list = []
 
 file_parts_number = 8
 # file_parts_number = 7 # Inspire
@@ -71,7 +70,9 @@ print('RAM usage has been limited to {} GBs >>>>>>>>>>>>>>>>>>>>>>>>>>'.format(R
 def feat(folder):
     global num_topics
     # docs = list(preprocess_documents(read_files(os.path.join(folder, "*.txt"))))
-    docs = list(preprocess_documents(read_json(folder+"/cleaned.json")))
+    ret_val_1 = read_json(folder + "/cleaned.json")
+    json_files_list = ret_val_1[1]
+    docs = list(preprocess_documents(ret_val_1[0]))
     assert(len(docs) > 0)
     print("len(docs) =",len(docs))
     # Uncomment this later and fix it with the new json theme
@@ -98,6 +99,8 @@ def feat(folder):
 
     print("'''''''''''''''''''''''''''''''")
     # print(td_dict)
+
+    empty_docs_list = []
 
     for doc in range(len(docs)):
         if docs[doc] == '':
@@ -136,7 +139,7 @@ def feat(folder):
     # print 'vocab\n',vocab
     # return td, idf, vocab
     # exit(0)
-    return td, vocab
+    return td, vocab, empty_docs_list, json_files_list
 
 def K(D):
     global num_topics
@@ -271,7 +274,7 @@ def matrix_to_file(mat):
 
 
 # @tm.task(feat, int, int)
-def train(data, maxiter=500, debug=True):
+def train(data,empty_docs_list,json_files_list,maxiter=500, debug=True):
     # td, idf, vocab = data
     # s_file_list= sorted(file_list)
     # print('file_list:',file_list)
@@ -323,7 +326,7 @@ def train(data, maxiter=500, debug=True):
     # print(file_list)
 
     print('>>>>>>> In method train:', empty_docs_list)
-    for edl in empty_docs_list:
+    for edl in sorted(empty_docs_list, reverse=True):
         # print(file_list[edl])
         del file_list[edl]
 
@@ -489,7 +492,10 @@ def main():
     print ('Training started at',time.strftime("%c"))
     start_time = time.time()
     data=feat(folder)
-    model=train(data)
+    empty_docs_list = data[2]
+    json_files_list = data[3]
+    data = data[:2]
+    model=train(data, empty_docs_list, json_files_list)
     print ('>>>>>>>>>>>>>Finished training')
     end_time = time.time()
     print ('Training took ' + str(round((end_time - start_time) / 60, 4)) + ' minutes.')

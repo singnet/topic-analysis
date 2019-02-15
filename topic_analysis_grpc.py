@@ -81,7 +81,7 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
             thread1 = threading.Thread(target=generate_topics_plsa, args=(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta))
             thread1.start()
 
-            resp = topic_analysis_pb2.PLSAResponse(status=True, message='success', handle=unique_folder_naming[:-1])
+            resp = topic_analysis_pb2.PLSAResponse(status=True, message='success', handle=unique_folder_naming[:-1].replace('-','e').replace(' ','d').replace('^','y'))
 
 
             print('status:',resp.status)
