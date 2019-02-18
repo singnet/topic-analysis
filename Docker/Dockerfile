@@ -36,10 +36,42 @@ RUN sudo pip install -r requirements.txt
 RUN echo 1
 RUN python3.6 -m nltk.downloader all
 
-RUN sudo apt-get install -y supervisor
+RUN sudo apt-get install -y supervisor && \
+    sudo rm /etc/supervisor/supervisord.conf
 
 COPY requirements_2.txt /tmp/
 RUN sudo pip install -r requirements_2.txt
+
+RUN sudo mkdir /var/log/kovand/ \
+    /var/log/ropstend/ \
+    /var/log/topic_grpc/ \
+    /var/log/topic_rest/
+
+RUN mkdir /home/top/pay/ \
+    /home/top/daemons/ \
+    /home/top/pay/kovan/ \
+    /home/top/pay/ropsten/ \
+    /home/top/gunicorn/ \
+    /home/top/daemons/kovan/ \
+    /home/top/daemons/ropsten/
+
+
+COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
+COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
+COPY gunicorn/config.py /home/top/gunicorn/
+COPY supervisor/kovand.conf /etc/supervisor/conf.d/
+COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
+COPY supervisor/supervisord.conf /etc/supervisor/
+
+ENV DAEMON_VERSION 0.1.6
+
+RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION/snet-daemon-v$DAEMON_VERSION-linux-amd64.tar.gz && \
+    tar  --strip-components=1 -xzf snet-daemon.tar.gz && \
+    cp snetd /home/top/daemons/kovan/ && \
+    cp snetd /home/top/daemons/ropsten/
+
 
 WORKDIR /home/top/
 RUN mkdir dep
