@@ -55,22 +55,23 @@ RUN mkdir /home/top/pay/ \
     /home/top/daemons/kovan/ \
     /home/top/daemons/ropsten/
 
-
-COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
-COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
-COPY gunicorn/config.py /home/top/gunicorn/
-COPY supervisor/kovand.conf /etc/supervisor/conf.d/
-COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
-COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
-COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
-COPY supervisor/supervisord.conf /etc/supervisor/
-
 ENV DAEMON_VERSION 0.1.6
 
 RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION/snet-daemon-v$DAEMON_VERSION-linux-amd64.tar.gz && \
     tar  --strip-components=1 -xzf snet-daemon.tar.gz && \
     cp snetd /home/top/daemons/kovan/ && \
     cp snetd /home/top/daemons/ropsten/
+
+RUN echo 22
+
+COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
+COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
+COPY gunicorn/config.py /home/top/gunicorn/
+#COPY supervisor/kovand.conf /etc/supervisor/conf.d/
+#COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
+COPY supervisor/supervisord.conf /etc/supervisor/
 
 
 WORKDIR /home/top/
@@ -89,5 +90,10 @@ WORKDIR /home/top/dep/topic-analysis
 
 RUN pwd
 RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+
+#CMD ["/usr/bin/supervisord"]
+
+#RUN sudo service supervisor stop
+#RUN sudo service supervisor start
 
 
