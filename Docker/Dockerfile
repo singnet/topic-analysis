@@ -83,8 +83,8 @@ RUN echo 32
 COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
 COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
 COPY gunicorn/config.py /home/top/gunicorn/
-#COPY supervisor/kovand.conf /etc/supervisor/conf.d/
-#COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
+COPY supervisor/kovand.conf /etc/supervisor/conf.d/
+COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
 COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
 COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
 COPY supervisor/supervisord.conf /etc/supervisor/
