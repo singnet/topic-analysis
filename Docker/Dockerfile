@@ -53,7 +53,15 @@ RUN mkdir /home/top/pay/ \
     /home/top/pay/ropsten/ \
     /home/top/gunicorn/ \
     /home/top/daemons/kovan/ \
-    /home/top/daemons/ropsten/
+    /home/top/daemons/ropsten/ \
+    /home/top/dep/ \
+    /home/top/dep/appData/ \
+    /home/top/dep/appData/plsa/ \
+    /home/top/dep/appData/plsa/cleaned/ \
+    /home/top/dep/appData/plsa/dict/ \
+    /home/top/dep/appData/plsa/extracted/ \
+    /home/top/dep/appData/plsa/plsa-parameters
+
 
 ENV DAEMON_VERSION 0.1.6
 
@@ -62,7 +70,15 @@ RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/d
     cp snetd /home/top/daemons/kovan/ && \
     cp snetd /home/top/daemons/ropsten/
 
-RUN echo 22
+RUN sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+
+RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    sudo dpkg-reconfigure --frontend=noninteractive locales && \
+    sudo update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+RUN echo 32
 
 COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
 COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
@@ -74,8 +90,6 @@ COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
 COPY supervisor/supervisord.conf /etc/supervisor/
 
 
-WORKDIR /home/top/
-RUN mkdir dep
 WORKDIR /home/top/dep
 
 #RUN git clone https://github.com/singnet/network-analytics-services.git && \
@@ -95,5 +109,4 @@ RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. servi
 
 #RUN sudo service supervisor stop
 #RUN sudo service supervisor start
-
 
