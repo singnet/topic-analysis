@@ -92,21 +92,28 @@ COPY supervisor/supervisord.conf /etc/supervisor/
 
 WORKDIR /home/top/dep
 
-#RUN git clone https://github.com/singnet/network-analytics-services.git && \
-#	cd network-analytics-services
 
-RUN whoami
 
-RUN echo 13 && \
-	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
+# Can be uncommented for local docker building
 
-WORKDIR /home/top/dep/topic-analysis
+#RUN whoami
+#
+#RUN echo 13 && \
+#	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
+#
+#WORKDIR /home/top/dep/topic-analysis
+#
+#RUN pwd
+#RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
 
-RUN pwd
-RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+# End of Can be uncommented for local docker building
+
+
+## Never going to be uncommented
 
 #CMD ["/usr/bin/supervisord"]
 
 #RUN sudo service supervisor stop
 #RUN sudo service supervisor start
 
+## End of Never going to be uncommented
