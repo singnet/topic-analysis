@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: edyirdaw/snet_topic_analysis:v2
+    working_directory: /home/top/dep
+    steps:
+      - checkout
+      - run:
+          name: Run unit tests
+          command: |
+            echo 'starting ...'
+            pwd
+            echo 'unit tests'
+            python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+            python3.6 test_topic_analysis_grpc.py
+
+
+  deploy:
+    docker:
+      - image: edyirdaw/snet_topic_analysis:v2
+    steps:
+       - run:
+          name: Run deploy script
+          command: |
+            echo 'starting deploy ...'
+            ssh -o StrictHostKeyChecking=no  $SSH_USER_1@$SSH_HOST_1 "bash /home/eyob/deploy/src_topic.sh"
+
+
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+                - dev
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - dev

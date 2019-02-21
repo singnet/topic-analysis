@@ -1,0 +1,10 @@
+workers = 3
+bind = "0.0.0.0:4998"
+errorlog = "/home/top/gunicorn/error.log"
+accesslog = "/home/top/gunicorn/access.log"
+loglevel = "debug"
+max_requests = 10
+pidfile = "/home/top/gunicorn/pid.pid"
+chdir = "/home/top/dep/topic-analysis"
+timeout = 120
+access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" "%(m)s" "%(U)s" "%(q)s" "%(H)s" %(B)s %(T)s %(p)s "%({Header}i)s" "%({Header}o)s" "%({Header}e)s"'

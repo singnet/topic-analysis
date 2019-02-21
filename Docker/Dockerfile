@@ -36,22 +36,84 @@ RUN sudo pip install -r requirements.txt
 RUN echo 1
 RUN python3.6 -m nltk.downloader all
 
+RUN sudo apt-get install -y supervisor && \
+    sudo rm /etc/supervisor/supervisord.conf
 
-WORKDIR /home/top/
-RUN mkdir dep
+COPY requirements_2.txt /tmp/
+RUN sudo pip install -r requirements_2.txt
+
+RUN sudo mkdir /var/log/kovand/ \
+    /var/log/ropstend/ \
+    /var/log/topic_grpc/ \
+    /var/log/topic_rest/
+
+RUN mkdir /home/top/pay/ \
+    /home/top/daemons/ \
+    /home/top/pay/kovan/ \
+    /home/top/pay/ropsten/ \
+    /home/top/gunicorn/ \
+    /home/top/daemons/kovan/ \
+    /home/top/daemons/ropsten/ \
+    /home/top/dep/ \
+    /home/top/dep/appData/ \
+    /home/top/dep/appData/plsa/ \
+    /home/top/dep/appData/plsa/cleaned/ \
+    /home/top/dep/appData/plsa/dict/ \
+    /home/top/dep/appData/plsa/extracted/ \
+    /home/top/dep/appData/plsa/plsa-parameters
+
+
+ENV DAEMON_VERSION 0.1.6
+
+RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION/snet-daemon-v$DAEMON_VERSION-linux-amd64.tar.gz && \
+    tar  --strip-components=1 -xzf snet-daemon.tar.gz && \
+    cp snetd /home/top/daemons/kovan/ && \
+    cp snetd /home/top/daemons/ropsten/
+
+RUN sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+
+RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    sudo dpkg-reconfigure --frontend=noninteractive locales && \
+    sudo update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+RUN echo 32
+
+COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
+COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
+COPY gunicorn/config.py /home/top/gunicorn/
+COPY supervisor/kovand.conf /etc/supervisor/conf.d/
+COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
+COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
+COPY supervisor/supervisord.conf /etc/supervisor/
+
+
 WORKDIR /home/top/dep
 
-#RUN git clone https://github.com/singnet/network-analytics-services.git && \
-#	cd network-analytics-services
-
-RUN whoami
-
-RUN echo 13 && \
-	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
-
-WORKDIR /home/top/dep/topic-analysis
-
-RUN pwd
-RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
 
 
+# Can be uncommented for local docker building
+
+#RUN whoami
+#
+#RUN echo 13 && \
+#	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
+#
+#WORKDIR /home/top/dep/topic-analysis
+#
+#RUN pwd
+#RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+
+# End of Can be uncommented for local docker building
+
+
+## Never going to be uncommented
+
+#CMD ["/usr/bin/supervisord"]
+
+#RUN sudo service supervisor stop
+#RUN sudo service supervisor start
+
+## End of Never going to be uncommented
