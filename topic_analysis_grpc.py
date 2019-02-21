@@ -55,7 +55,7 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
             param_error = True
             message = 'topic_divider parameter can not be a negative nubmer'
 
-        if topic_divider != 0 and num_topics < 2:
+        if topic_divider == 0 and num_topics < 2:
             param_error = True
             message = 'Number of topics should be at least two'
 
