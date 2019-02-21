@@ -47,29 +47,43 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
         param_error = False
         message = ''
 
-        if len(docs) < 2:
-            message = 'Length of docs should be at least two'
-            param_error =True
+        try :
 
-        if topic_divider < 0:
-            param_error = True
-            message = 'topic_divider parameter can not be a negative nubmer'
+            if len(docs) < 2:
+                message = 'Length of docs should be at least two'
+                param_error =True
 
-        if topic_divider == 0 and num_topics < 2:
-            param_error = True
-            message = 'Number of topics should be at least two'
+            if topic_divider < 0:
+                param_error = True
+                message = 'topic_divider parameter can not be a negative nubmer'
 
-        if maxiter < 0:
-            param_error = True
-            message = 'maxiter should be greater than zero'
+            if topic_divider == 0 and num_topics < 2:
+                param_error = True
+                message = 'Number of topics should be at least two'
 
-        if beta < 0 or beta > 1:
-            param_error = True
-            message = 'beta should have value of (0,1]'
+            if maxiter < 0:
+                param_error = True
+                message = 'maxiter should be greater than zero'
+
+            if beta < 0 or beta > 1:
+                param_error = True
+                message = 'beta should have value of (0,1]'
 
 
-        if param_error:
-            return topic_analysis_pb2.PLSAResponse(status=False, message=message)
+            if param_error:
+                print(time.strftime("%c"))
+                print('Waiting for next call on port 5000.')
+                raise grpc.RpcError(grpc.StatusCode.UNKNOWN, message)
+
+
+        except Exception as e:
+
+            logging.exception("message")
+
+            print(time.strftime("%c"))
+            print('Waiting for next call on port 5000.')
+
+            raise grpc.RpcError(grpc.StatusCode.UNKNOWN, str(e))
 
 
 
@@ -95,13 +109,10 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
 
             logging.exception("message")
 
-            resp = topic_analysis_pb2.PLSAResponse(status=False, message=str(e))
-
-            print('status:', resp.status)
-            print('message:', resp.message)
+            print(time.strftime("%c"))
             print('Waiting for next call on port 5000.')
 
-            return resp
+            raise grpc.RpcError(grpc.StatusCode.UNKNOWN, str(e))
 
 
 def generate_topics_plsa(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta):
