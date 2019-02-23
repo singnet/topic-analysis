@@ -78,7 +78,7 @@ RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen &&
 
 ENV LANG en_US.UTF-8
 
-RUN echo 32
+RUN echo 37
 
 COPY daemons/snetd_topic_kovan.json /home/top/daemons/kovan/
 COPY daemons/snetd_topic_ropsten.json /home/top/daemons/ropsten/
@@ -92,7 +92,7 @@ COPY supervisor/supervisord.conf /etc/supervisor/
 
 WORKDIR /home/top/dep
 
-
+#USER root
 
 # Can be uncommented for local docker building
 
