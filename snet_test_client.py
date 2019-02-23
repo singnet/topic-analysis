@@ -115,7 +115,8 @@ def try_plsa_2():
 if __name__ == '__main__':
 
     # try_plsa()
-    try_plsa_2()
+    print(sample_data_2())
+    # try_plsa_2()
     # csv_reader()
 
 
