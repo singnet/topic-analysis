@@ -32,7 +32,7 @@ def sample_data():
 
 def sample_data_2():
 
-    path = str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/docs/tests/test_doc.txt'
+    path = str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/docs/tests/test_doc_2.txt'
 
     docs = []
 
@@ -90,8 +90,8 @@ def try_plsa():
 
 
 def try_plsa_2():
-    # channel = grpc.insecure_channel('localhost:5000')
-    channel = grpc.insecure_channel('172.17.1.53:5001')
+    channel = grpc.insecure_channel('localhost:5000')
+    # channel = grpc.insecure_channel('172.17.1.53:5001')
     # channel = grpc.insecure_channel('172.17.0.75:5001')
     stub = topic_analysis_pb2_grpc.TopicAnalysisStub(channel)
 
@@ -115,8 +115,8 @@ def try_plsa_2():
 if __name__ == '__main__':
 
     # try_plsa()
-    print(sample_data_2())
-    # try_plsa_2()
+    # print(sample_data_2())
+    try_plsa_2()
     # csv_reader()
 
 

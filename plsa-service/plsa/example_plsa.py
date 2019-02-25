@@ -358,6 +358,11 @@ def train(data,empty_docs_list,json_files_list,maxiter=500, debug=True):
 
     word_by_topic_conditional = open(PATH_word_by_topic_conditional+'.csv', "w")
 
+    global num_topics_generated
+    if len(plsa.p_w_z) < 300:
+        num_topics_generated = len(plsa.p_w_z)
+
+
     p_w_z_transposed_truncated = np.sort(plsa.p_w_z.transpose()[:,0:num_topics_generated])
 
     for i in range(p_w_z_transposed_truncated.__len__()):
