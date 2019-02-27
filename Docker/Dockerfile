@@ -43,6 +43,9 @@ COPY requirements_2.txt /tmp/
 RUN sudo pip install -r requirements_2.txt
 
 
+RUN echo 1
+
+
 RUN sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
 
 RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -51,8 +54,6 @@ RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen &&
 
 ENV LANG en_US.UTF-8
 
-
-RUN echo 1
 
 RUN sudo mkdir /var/log/kovand/ \
     /var/log/ropstend/ \
