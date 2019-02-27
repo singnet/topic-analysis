@@ -42,6 +42,19 @@ RUN sudo apt-get install -y supervisor && \
 COPY requirements_2.txt /tmp/
 RUN sudo pip install -r requirements_2.txt
 
+
+RUN echo 1
+
+
+RUN sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+
+RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    sudo dpkg-reconfigure --frontend=noninteractive locales && \
+    sudo update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+
 RUN sudo mkdir /var/log/kovand/ \
     /var/log/ropstend/ \
     /var/log/mainnetd/ \
@@ -66,6 +79,7 @@ RUN mkdir /home/top/pay/ \
     /home/top/dep/appData/plsa/plsa-parameters
 
 
+
 ENV DAEMON_VERSION 0.1.7
 
 RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION/snet-daemon-v$DAEMON_VERSION-linux-amd64.tar.gz && \
@@ -74,13 +88,6 @@ RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/d
     cp snetd /home/top/daemons/ropsten/ && \
     cp snetd /home/top/daemons/mainnet/
 
-RUN sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
-
-RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    sudo dpkg-reconfigure --frontend=noninteractive locales && \
-    sudo update-locale LANG=en_US.UTF-8
-
-ENV LANG en_US.UTF-8
 
 RUN echo 37
 
@@ -90,7 +97,7 @@ COPY daemons/snetd_topic_mainnet.json /home/top/daemons/mainnet/
 COPY gunicorn/config.py /home/top/gunicorn/
 COPY supervisor/kovand.conf /etc/supervisor/conf.d/
 COPY supervisor/ropstend.conf /etc/supervisor/conf.d/
-COPY supervisor/mainnet.conf /etc/supervisor/conf.d/
+COPY supervisor/mainnetd.conf /etc/supervisor/conf.d/
 COPY supervisor/topic_grpc.conf /etc/supervisor/conf.d/
 COPY supervisor/topic_rest.conf /etc/supervisor/conf.d/
 COPY supervisor/supervisord.conf /etc/supervisor/
