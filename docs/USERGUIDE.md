@@ -4,6 +4,9 @@
 
 Below is available list of topic analysis methods that have been implemented so far.
 
+In all the cases of the specified topic analysis methods, running
+each method would return a link which points to a page that would show the status of the analysis if its not finished yet or the results of the analysis if the analysis has completed.
+
 
 ## Probabilistic Latent Semantic Analysis (PLSA)
 
@@ -19,4 +22,3 @@ the `(number of documents)/topic_divider`
 
 
 Here are sample json files to try with this algorithm, either from the snet client or the dApp: [longer sample](../docs/tests/topic_analysis.json), [shorter sample](../docs/tests/topic_analysis_2.json) .
-
