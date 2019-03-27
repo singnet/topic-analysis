@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "display_name": "topic-analysis",
+    "encoding": "proto",
+    "service_type": "grpc",
+    "payment_expiration_threshold": 40320,
+    "model_ipfs_hash": "QmYMZZjkiZ8Y5SCj6QPeFNnSZAjLxskhx7KmCp9YJX28sk",
+    "mpe_address": "0x39f31Ac7B393fE2C6660b95b878FEB16eA8f3156",
+    "pricing": {
+        "price_model": "fixed_price",
+        "price_in_cogs": 1
+    },
+    "groups": [
+        {
+            "group_name": "default_group",
+            "group_id": "teO464wjqarw41ud9myb2ZWEsT/J5Cj7joprYdheSTU=",
+            "payment_address": "0x32Cb8b6a2E3A8cB319dBBbECb354F23197746704"
+        }
+    ],
+    "endpoints": [
+        {
+            "group_name": "default_group",
+            "endpoint": "https://tz-services-1.snet.sh:2300"
+        }
+    ],
+    "service_description": {
+        "url": "https://github.com/singnet/topic-analysis",
+        "description": "Given a collection of documents, extracts the topics that exist in the collection. A document can consist of a single sentence."
+    }
+}
