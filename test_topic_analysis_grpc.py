@@ -22,12 +22,16 @@ class TestTopicAnalysisGrpc(unittest.TestCase):
 
         self.app = analysis_results.app.test_client()
         self.docs = []
+        self.docs_2 = None
 
         sample_doc = 'docs/tests/test_doc.txt'
         with open(sample_doc,'r') as f:
             self.docs = f.read().splitlines()
 
         self.docs = list(filter(lambda a: a != '', self.docs))
+
+        with open(sample_doc,'r') as f:
+            self.docs_2 = [f.read()]
 
         channel = grpc.insecure_channel('localhost:5000')
         self.stub = topic_analysis_pb2_grpc.TopicAnalysisStub(channel)
@@ -78,8 +82,42 @@ class TestTopicAnalysisGrpc(unittest.TestCase):
 
 
 
+        # Test for untokenized text input
 
+        plsa_request = topic_analysis_pb2.PLSARequest(docs=self.docs_2, num_topics=2, maxiter=22, beta=1)
 
+        resp = self.stub.PLSA(plsa_request)
+
+        print('////////////// Sleeping till topic analysis finishes')
+        time.sleep(sleep_time_secs)
+        print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\  Wide awake now')
+
+        print(resp)
+
+        self.assertEqual([resp.status,resp.message],[True,'success'])
+
+        resp2 = self.app.get('/topic-analysis/api/v1.0/results?handle='+resp.handle)
+        resp2_data = json.loads(resp2.get_data(as_text=True))
+        print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
+
+        self.assertEqual(resp2_data['status'],'Topic analysis finished.')
+        self.assertGreater(resp2_data['total running time in minutes'],0.0)
+        self.assertEqual(resp2_data['docs_list'], [str(i) for i in range(0,98)])
+        self.assertEqual(len(resp2_data['topics']),2)
+        self.assertIsInstance(resp2_data['topics'][0],str)
+        self.assertIsInstance(resp2_data['topics'][1],str)
+        self.assertEqual(len(resp2_data['topicByDocMatirx']),2)
+        self.assertEqual(len(resp2_data['topicByDocMatirx'][0]),98)
+        self.assertAlmostEqual(sum(sum(resp2_data['topicByDocMatirx'],[])),1.0,delta=0.1)
+        print('sum of p(z,d)=',sum(sum(resp2_data['topicByDocMatirx'],[])))
+        self.assertAlmostEqual(resp2_data['topicProbabilities'][0]+ resp2_data['topicProbabilities'][1],1.0,delta=0.1)
+        self.assertEqual(len(resp2_data['wordByTopicConditional']), 2)
+        self.assertEqual(len(resp2_data['wordByTopicConditional'][0]), 300)
+        self.assertAlmostEqual(sum(sum(resp2_data['wordByTopicConditional'], [])), 1.0, delta=0.1)
+        print('sum of p(w|z)=',sum(sum(resp2_data['wordByTopicConditional'],[])))
+        self.assertEqual(len(resp2_data['logLikelihoods']),23)
+        for i in range(0,23):
+            self.assertLess(resp2_data['logLikelihoods'][i],0)
 
 
 
