@@ -11,6 +11,7 @@ import csv
 import numpy as np
 import datetime
 import random
+from nltk.tokenize import sent_tokenize
 
 
 SLEEP_TIME = 86400 # One day
@@ -49,9 +50,12 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
 
         try :
 
-            if len(docs) < 2:
-                message = 'Length of docs should be at least two'
+            if len(docs) < 1:
+                message = 'Length of docs should be at one'
                 param_error =True
+
+            if len(docs) == 1:
+                docs = sent_tokenize(docs[0])
 
             if topic_divider < 0:
                 param_error = True
