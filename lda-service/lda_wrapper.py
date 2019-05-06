@@ -15,11 +15,13 @@ import time
 import json
 import logging
 
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/preprocessing')
+sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/topic-analysis/plsa-service/preprocessing')
 
+import example_plsa as pplsa
 import cleansing as pclean
-
 
 class LDA_wrapper:
 
@@ -78,6 +80,27 @@ class LDA_wrapper:
 
 
 
+    def generate_topics_json(self):
+
+        start_time_1 = time.time()
+
+        pclean.file_dict = self.file_dict + self.unique_folder_naming[:-1] + '_dict'
+        pclean.source_texts = self.source_texts + self.unique_folder_naming + 'extracted.json'
+        pclean.output_dir = self.output_dir + self.unique_folder_naming
+
+        os.mkdir(pclean.output_dir)
+
+        # Do cleansing on the data and turing it to bad-of-words model
+
+        with open(self.lda_parameters_path + self.unique_folder_naming + 'status.txt', 'w') as f:
+            f.write('Preprocessing started.')
+
+        pclean.pre_pro()
+
+        with open(self.lda_parameters_path + self.unique_folder_naming + 'status.txt', 'w') as f:
+            f.write('Preprocessing finished. Topic analysis started.')
+
+
 
 
 
@@ -111,9 +134,9 @@ def run_lda():
     # s.max_iter = 22
     # s.beta = 1
     s.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
-    os.mkdir(str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/plsa/plsa-parameters/'+s.unique_folder_naming)
+    os.mkdir(str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/lda/lda-parameters/'+s.unique_folder_naming)
     s.write_to_json()
-    # s.generate_topics_json()
+    s.generate_topics_json()
 
 
 
