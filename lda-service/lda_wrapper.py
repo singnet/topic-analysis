@@ -15,6 +15,22 @@ import time
 import json
 import logging
 
+import re
+import numpy as np
+import pandas as pd
+
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+
+# Enable logging for gensim - optional
+import logging
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
+
+import warnings
+warnings.filterwarnings("ignore",category=DeprecationWarning)
+
 # sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/preprocessing')
 # sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
@@ -99,6 +115,31 @@ class LDA_wrapper:
 
         with open(self.lda_parameters_path + self.unique_folder_naming + 'status.txt', 'w') as f:
             f.write('Preprocessing finished. Topic analysis started.')
+
+        with open(pclean.output_dir+'cleaned.json', "r") as read_file:
+            ret = json.load(read_file)
+
+        data_lemmatized = []
+
+        for k in ret:
+            data_lemmatized.append(ret[k].splitlines())
+
+        # Create Dictionary
+        id2word = corpora.Dictionary(data_lemmatized)
+
+        # Create Corpus
+        texts = data_lemmatized
+
+        # Term Document Frequency
+        corpus = [id2word.doc2bow(text) for text in texts]
+
+        # View
+        # print(corpus[0:1])
+        # print(id2word[1])
+
+
+
+
 
 
 
