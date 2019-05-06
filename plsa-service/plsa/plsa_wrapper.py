@@ -145,7 +145,7 @@ class PLSA_wrapper:
 
 def run_plsa():
 
-    path = str(pathlib.Path(os.path.abspath('')).parents[2])+'/appData/misc/extracted.json'
+    path = str(pathlib.Path(os.path.abspath('')).parents[2])+'/appData/misc/extracted_2.json'
 
     docs = []
 
@@ -157,6 +157,12 @@ def run_plsa():
         docs.append(fileList[k])
 
     s = PLSA_wrapper(docs,local=True)
+    s.topic_divider = 0
+    s.num_topics = 2
+    s.max_iter = 22
+    s.beta = 1
+    s.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
+    os.mkdir(str(pathlib.Path(os.path.abspath('')).parents[2])+'/appData/plsa/plsa-parameters/'+s.unique_folder_naming)
     s.write_to_json()
     s.generate_topics_json()
 
