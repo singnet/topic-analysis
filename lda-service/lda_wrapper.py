@@ -15,12 +15,12 @@ import time
 import json
 import logging
 
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/plsa')
+# sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/plsa-service/preprocessing')
-sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
+# sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/topic-analysis/plsa-service/preprocessing')
 
-import example_plsa as pplsa
+# import example_plsa as pplsa
 import cleansing as pclean
 
 class LDA_wrapper:
