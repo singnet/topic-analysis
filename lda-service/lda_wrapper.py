@@ -18,6 +18,7 @@ import logging
 import re
 import numpy as np
 import pandas as pd
+from pprint import pprint
 
 import gensim
 import gensim.corpora as corpora
@@ -38,6 +39,7 @@ sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[1])+'/topic-analys
 
 # import example_plsa as pplsa
 import cleansing as pclean
+import porter_dictionary
 
 class LDA_wrapper:
 
@@ -96,7 +98,10 @@ class LDA_wrapper:
 
 
 
-    def generate_topics_json(self):
+    def generate_topics_gensim(self,num_topics, passes, chunksize,
+                               update_every=0, alpha='auto', eta='auto', decay=0.5, offset=1.0, eval_every=1,
+                               iterations=50, gamma_threshold=0.001, minimum_probability=0.01, random_state=None,
+                               minimum_phi_value=0.01, per_word_topics=True, callbacks=None):
 
         start_time_1 = time.time()
 
@@ -137,16 +142,50 @@ class LDA_wrapper:
         # print(corpus[0:1])
         # print(id2word[1])
 
+        self.lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
+                                                    id2word=id2word,
+                                                    num_topics=num_topics,
+                                                    random_state=random_state,
+                                                    update_every=update_every,
+                                                    chunksize=chunksize,
+                                                    passes=passes,
+                                                    alpha=alpha,
+                                                    eta=eta,
+                                                    per_word_topics=per_word_topics,
+                                                    decay=decay,
+                                                    offset=offset,
+                                                    eval_every=eval_every,
+                                                    iterations=iterations,
+                                                    gamma_threshold=gamma_threshold,
+                                                    minimum_probability=minimum_probability,
+                                                    minimum_phi_value=minimum_phi_value,
+                                                    callbacks=callbacks)
+
+        port_dict = porter_dictionary.porter_dictionary()
+
+        topics = self.lda_model.show_topics(num_topics=num_topics,num_words=300,formatted=False)
+
+        extracted_topics = []
+
+        for topic in topics:
+            a_topic = []
+            for item in topic[1]:
+                a_topic.append(item[0])
+            extracted_topics.append(a_topic)
+
+        port_dict.load_dict(self.dict_path + self.unique_folder_naming[:-1] + '_dict')
 
 
+        self.topics_destemmed = []
 
-
-
-
-
-
-
-
+        for i in extracted_topics:
+            destemmed = []
+            for j in i:
+                try:
+                    destemmed.append(port_dict.dictionary[j][0])
+                except:
+                    logging.exception('message')
+            self.topics_destemmed.append(destemmed)
 
 
 
@@ -158,7 +197,9 @@ def run_lda():
     docs = []
     s = LDA_wrapper(docs, local=True)
 
-    path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_2.json'
+    # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_2.json'
+    path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_singnet_all.json'
+    # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_hersheys_all.json'
 
     docs = []
 
@@ -177,7 +218,17 @@ def run_lda():
     s.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
     os.mkdir(str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/lda/lda-parameters/'+s.unique_folder_naming)
     s.write_to_json()
-    s.generate_topics_json()
+    # s.generate_topics_gensim(num_topics=3,passes=100,chunksize=200)
+    s.generate_topics_gensim(num_topics=2,passes=100,chunksize=200,random_state=2)
+
+    # pprint(s.lda_model.print_topics(3,50))
+    # topics = s.lda_model.show_topics(2,5,formatted=False)
+    # print(topics)
+    print_two_d(s.topics_destemmed)
+
+def print_two_d(two_d):
+    for i in two_d:
+        print(i)
 
 
 
