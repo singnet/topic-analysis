@@ -198,8 +198,10 @@ def run_lda():
     s = LDA_wrapper(docs, local=True)
 
     # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_2.json'
-    path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_singnet_all.json'
+    # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_singnet_all.json'
+    # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_bio_all.json'
     # path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_hersheys_all.json'
+    path = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/extracted_hr_all.json'
 
     docs = []
 
@@ -218,13 +220,90 @@ def run_lda():
     s.unique_folder_naming = str(datetime.datetime.now()).replace(':','-').replace('.','-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
     os.mkdir(str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/lda/lda-parameters/'+s.unique_folder_naming)
     s.write_to_json()
-    # s.generate_topics_gensim(num_topics=3,passes=100,chunksize=200)
-    s.generate_topics_gensim(num_topics=2,passes=100,chunksize=200,random_state=2)
+    s.generate_topics_gensim(num_topics=3,passes=22,chunksize=200)
+    # s.generate_topics_gensim(num_topics=2,passes=22,chunksize=200)
+    # s.generate_topics_gensim(num_topics=2,passes=100,chunksize=200,random_state=2)
+
 
     # pprint(s.lda_model.print_topics(3,50))
     # topics = s.lda_model.show_topics(2,5,formatted=False)
     # print(topics)
     print_two_d(s.topics_destemmed)
+
+
+    # topics_snet_all_plsa_file = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/topics/singnet_all_plsa_topics_2.txt'
+    # topics_snet_all_plsa_file = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/topics/hersheys_all_plsa_topics.txt'
+    # topics_snet_all_plsa_file = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/topics/bio_all_plsa_topics.txt'
+    topics_snet_all_plsa_file = str(pathlib.Path(os.path.abspath('')).parents[1])+'/appData/misc/topics/hr_all_plsa_topics.txt'
+    with open(topics_snet_all_plsa_file,'r') as f:
+        temp_list = f.readlines()
+        topics_snet_all_plsa = []
+        for l in temp_list:
+            topics_snet_all_plsa.append(l.split(','))
+
+        for i in range(len(topics_snet_all_plsa)):
+            for j in range(len(topics_snet_all_plsa[0])):
+                topics_snet_all_plsa[i][j] = topics_snet_all_plsa[i][j].strip()
+
+    topics_snet_all_plsa_file_2 = str(pathlib.Path(os.path.abspath('')).parents[1]) + '/appData/misc/topics/hr_all_plsa_topics_2.txt'
+    with open(topics_snet_all_plsa_file_2, 'r') as f:
+        temp_list = f.readlines()
+        topics_snet_all_plsa_2 = []
+        for l in temp_list:
+            topics_snet_all_plsa_2.append(l.split(','))
+
+        for i in range(len(topics_snet_all_plsa_2)):
+            for j in range(len(topics_snet_all_plsa_2[0])):
+                topics_snet_all_plsa_2[i][j] = topics_snet_all_plsa_2[i][j].strip()
+
+
+
+    # two topics
+    # print(dot_product(topics_snet_all_plsa[0],s.topics_destemmed[0],depth=30))
+    # print(dot_product(topics_snet_all_plsa[0],s.topics_destemmed[1],depth=30))
+    # print('=========================')
+    # print(dot_product(topics_snet_all_plsa[1],s.topics_destemmed[0],depth=30))
+    # print(dot_product(topics_snet_all_plsa[1],s.topics_destemmed[1],depth=30))
+    # two topics
+
+    # three topics
+    print(dot_product(topics_snet_all_plsa[0],s.topics_destemmed[0],depth=30))
+    print(dot_product(topics_snet_all_plsa[0],s.topics_destemmed[1],depth=30))
+    print(dot_product(topics_snet_all_plsa[0],s.topics_destemmed[2],depth=30))
+    print('=========================')
+    print(dot_product(topics_snet_all_plsa[1], s.topics_destemmed[0], depth=30))
+    print(dot_product(topics_snet_all_plsa[1], s.topics_destemmed[1], depth=30))
+    print(dot_product(topics_snet_all_plsa[1], s.topics_destemmed[2], depth=30))
+    print('=========================')
+    print(dot_product(topics_snet_all_plsa[2], s.topics_destemmed[0], depth=30))
+    print(dot_product(topics_snet_all_plsa[2], s.topics_destemmed[1], depth=30))
+    print(dot_product(topics_snet_all_plsa[2], s.topics_destemmed[2], depth=30))
+    print('=========================')
+    # three topics
+
+    # plsa self
+    # print(dot_product(topics_snet_all_plsa[0], topics_snet_all_plsa_2[0], depth=30))
+    # print(dot_product(topics_snet_all_plsa[0], topics_snet_all_plsa_2[1], depth=30))
+    # print(dot_product(topics_snet_all_plsa[0], topics_snet_all_plsa_2[2], depth=30))
+    # print('=========================')
+    # print(dot_product(topics_snet_all_plsa[1], topics_snet_all_plsa_2[0], depth=30))
+    # print(dot_product(topics_snet_all_plsa[1], topics_snet_all_plsa_2[1], depth=30))
+    # print(dot_product(topics_snet_all_plsa[1], topics_snet_all_plsa_2[2], depth=30))
+    # print('=========================')
+    # print(dot_product(topics_snet_all_plsa[2], topics_snet_all_plsa_2[0], depth=30))
+    # print(dot_product(topics_snet_all_plsa[2], topics_snet_all_plsa_2[1], depth=30))
+    # print(dot_product(topics_snet_all_plsa[2], topics_snet_all_plsa_2[2], depth=30))
+    # print('=========================')
+    # plsa self
+
+
+def dot_product(list_1,list_2,depth=30):
+
+    count = 0
+    for i in list_1[0:depth]:
+        if i in list_2[0:depth]:
+            count = count + 1
+    return count
 
 def print_two_d(two_d):
     for i in two_d:
