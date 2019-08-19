@@ -24,6 +24,7 @@ print(sys.path)
 
 import plsa_wrapper
 import threading
+import multiprocessing as mp
 
 from service_spec import topic_analysis_pb2
 from service_spec import topic_analysis_pb2_grpc
@@ -96,8 +97,10 @@ class TopicAnalysis(topic_analysis_pb2_grpc.TopicAnalysisServicer):
 
             unique_folder_naming = str(datetime.datetime.now()).replace(':', '-').replace('.', '-') + '^' + str(random.randint(100000000000, 999999999999)) + '/'
 
-            thread1 = threading.Thread(target=generate_topics_plsa, args=(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta))
-            thread1.start()
+            # thread1 = threading.Thread(target=generate_topics_plsa, args=(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta))
+            p1 = mp.Process(target=generate_topics_plsa, args=(docs,unique_folder_naming,num_topics,topic_divider,maxiter,beta))
+
+            p1.start()
 
             resp = topic_analysis_pb2.PLSAResponse(status=True, message='success', handle=unique_folder_naming[:-1].replace('-','e').replace(' ','d').replace('^','y'))
 
