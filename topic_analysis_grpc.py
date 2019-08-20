@@ -160,7 +160,7 @@ def generate_topics_plsa(docs,unique_folder_naming,num_topics,topic_divider,maxi
 
 def serve():
 
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     topic_analysis_pb2_grpc.add_TopicAnalysisServicer_to_server(TopicAnalysis(), server)
     print('Starting server. Listening on port 5000.')
     server.add_insecure_port('127.0.0.1:5000')
