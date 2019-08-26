@@ -194,6 +194,16 @@ class LDA_wrapper:
         also code that writes the final status that shows total running time that elapsed
         
         in general, compare the outputs of plsa and as much as possible try to apply it to the results that are returned by lda
+        
+        max 300 words returned in p(w|z) and in list of topics
+        
+        p(w|z) should be sorted by each topic independently
+        
+        the list of topics should appear in the order of  the p(w|z) mentioned above
+        
+        topic by doc matric should be joint
+        
+        word by topic matrix should be joint if possible
         '''
 
 
