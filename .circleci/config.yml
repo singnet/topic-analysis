@@ -5,11 +5,21 @@ jobs:
       - image: edyirdaw/snet_topic_analysis:v2
     working_directory: /home/top/dep
     steps:
+      - run:
+          name: Move dir
+          command: |
+            ls
+            mv appData  /home/top
+            mkdir /home/top/topic-analysis
       - checkout
       - run:
           name: Run unit tests
           command: |
             echo 'starting ...'
+            mv * /home/top/topic-analysis
+            mv /home/top/topic-analysis  /home/top/dep
+            mv /home/top/appData /home/top/dep
+            cd topic-analysis
             pwd
             echo 'unit tests'
             python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
@@ -24,7 +34,7 @@ jobs:
           name: Run deploy script
           command: |
             echo 'starting deploy ...'
-            ssh -o StrictHostKeyChecking=no  $SSH_USER_1@$SSH_HOST_1 "bash /home/eyob/deploy/src_topic.sh"
+            #ssh -o StrictHostKeyChecking=no  $SSH_USER_1@$SSH_HOST_1 "bash /home/eyob/deploy/src_topic.sh"
 
 
 
