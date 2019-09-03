@@ -10,7 +10,7 @@ jobs:
           command: |
             ls
             mv appData  /home/top
-            mkdir topic-analysis
+            mkdir /home/top/topic-analysis
       - checkout
       - run:
           name: Run unit tests
