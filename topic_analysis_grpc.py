@@ -23,6 +23,7 @@ sys.path.append('/home/top/dep/topic-analysis/plsa-service/plsa')
 sys.path.append('/home/top/dep/topic-analysis/plsa-service/preprocessing')
 
 print(sys.path)
+print(os.getcwd())
 
 import plsa_wrapper
 import threading
