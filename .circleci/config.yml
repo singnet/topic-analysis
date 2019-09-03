@@ -6,17 +6,20 @@ jobs:
     working_directory: /home/top/dep
     steps:
       - run:
-          name: Delete dir
+          name: Move dir
           command: |
             ls
-            cd ..
-            rm -r dep/*
-            cd dep
+            mv appData  /home/top
+            mkdir topic-analysis
       - checkout
       - run:
           name: Run unit tests
           command: |
             echo 'starting ...'
+            mv * /home/top/topic-analysis
+            mv /home/top/topic-analysis  /home/top/dep
+            mv /home/top/appData /home/top/dep
+            cd topic-analysis
             pwd
             echo 'unit tests'
             python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
