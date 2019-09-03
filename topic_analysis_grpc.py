@@ -19,6 +19,8 @@ SLEEP_TIME = 86400 # One day
 
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa-service/plsa')
 sys.path.append(str(pathlib.Path(os.path.abspath('')).parents[0])+'/topic-analysis/plsa-service/preprocessing')
+sys.path.append('/home/top/dep/topic-analysis/plsa-service/plsa')
+sys.path.append('/home/top/dep/topic-analysis/plsa-service/preprocessing')
 
 print(sys.path)
 
