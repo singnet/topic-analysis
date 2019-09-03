@@ -8,6 +8,7 @@ jobs:
       - run:
           name: Delete dir
           command: |
+            ls
             cd ..
             rm -r dep/*
             cd dep
