@@ -5,6 +5,12 @@ jobs:
       - image: edyirdaw/snet_topic_analysis:v2
     working_directory: /home/top/dep
     steps:
+      - run:
+          name: Delete dir
+          command: |
+            cd ..
+            rm -r dep/*
+            cd dep
       - checkout
       - run:
           name: Run unit tests
