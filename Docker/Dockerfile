@@ -81,7 +81,7 @@ RUN mkdir /home/top/pay/ \
 
 
 
-ENV DAEMON_VERSION 1.0.0
+ENV DAEMON_VERSION 3.1.2
 
 RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION/snet-daemon-v$DAEMON_VERSION-linux-amd64.tar.gz && \
     tar  --strip-components=1 -xzf snet-daemon.tar.gz && \
