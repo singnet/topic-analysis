@@ -92,7 +92,7 @@ RUN mkdir /home/top/pay/ \
 #    rm snetd
 
 
-ENV DAEMON_VERSION_2 3.1.2
+ENV DAEMON_VERSION_2 4.0.0
 
 RUN wget -O snet-daemon.tar.gz https://github.com/singnet/snet-daemon/releases/download/v$DAEMON_VERSION_2/snet-daemon-v$DAEMON_VERSION_2-linux-amd64.tar.gz && \
     tar  --strip-components=1 -xzf snet-daemon.tar.gz && \
@@ -119,19 +119,19 @@ WORKDIR /home/top/dep
 
 #USER root
 
-# Can be uncommented for local docker building
+# Needs to be uncommented for deploying. Comment out for circleci tests to pass.
+'''
+RUN whoami
 
-#RUN whoami
-#
-#RUN echo 13 && \
-#	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
-#
-#WORKDIR /home/top/dep/topic-analysis
-#
-#RUN pwd
-#RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+RUN echo 13 && \
+	git clone https://github.com/edyirdaw/topic-analysis.git && cd topic-analysis &&  git checkout --track origin/dev
 
-# End of Can be uncommented for local docker building
+WORKDIR /home/top/dep/topic-analysis
+
+RUN pwd
+RUN python3.6 -m grpc_tools.protoc -I. --python_out=.  --grpc_python_out=. service_spec/topic_analysis.proto
+'''
+# End of Needs to be uncommented for deploying. Comment out for circleci tests to pass.
 
 
 ## Never going to be uncommented
