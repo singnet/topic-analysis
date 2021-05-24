@@ -1,0 +1,23 @@
+{
+   "DAEMON_END_POINT": "0.0.0.0:2302",
+   "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
+   "PASSTHROUGH_ENABLED": true,
+   "PASSTHROUGH_ENDPOINT": "http://127.0.0.1:5000",
+   "ORGANIZATION_ID": "snet",
+   "SERVICE_ID": "topic-analysis",
+   "ssl_cert": "/etc/letsencrypt/live/tz-services-1.snet.sh/fullchain.pem",
+   "ssl_key": "/etc/letsencrypt/live/tz-services-1.snet.sh/privkey.pem",
+   "payment_channel_cert_path": "/home/top/ssl/client.pem",
+   "payment_channel_ca_path": "/home/top/ssl/ca.pem",
+   "payment_channel_key_path": "/home/top/ssl/client-key.pem",
+   "blockchain_network_selected": "main",
+   "ethereum_json_rpc_endpoint": "https://mainnet.infura.io/v3/e7732e1f679e461b9bb4da5653ac3fc2",
+   "metering_end_point": "https://mainnet-marketplace.singularitynet.io",
+   "pvt_key_for_metering": "3ebc49246cac4b107584b8c5d7cecec2df5f0884167810813f34d52e09c0a3e7",
+   "LOG": {
+       "LEVEL": "debug",
+       "OUTPUT": {
+              "TYPE": "stdout"
+           }
+   }
+}
